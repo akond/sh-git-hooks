@@ -1,0 +1,20 @@
+#!/bin/sh
+
+git reset HEAD public/css/style.css
+
+PATCH=$(find tmp.fixture -name '*.patch')
+if [ -z "$PATCH" ]
+then
+	exit 0
+fi
+
+git apply -R --cached --index $PATCH 2>&1 > /dev/null
+
+DIFF=$(git diff-index --cached --numstat --dirstat=changes HEAD)
+if [ -z "$DIFF" ]
+then
+	echo "There is nothing to commit."
+	exit 1
+fi
+
+exit 0
